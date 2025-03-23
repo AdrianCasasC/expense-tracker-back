@@ -20,8 +20,9 @@ func GetExpenses(c *gin.Context) {
 
 func PostExpense(c *gin.Context) {
 	var newExpense = models.ExpenseDto{}
-	if err := c.BindJSON(&newExpense); err != nil {
+	if err := c.Bind(&newExpense); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid request body"})
+		return
 	}
 
 	err := services.CreateExpense(newExpense)
