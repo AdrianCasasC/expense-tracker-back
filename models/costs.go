@@ -6,6 +6,6 @@ type CostDto struct {
 }
 
 type GraphCost struct {
-	Name  string  `json:"name" bson:"name"`
+	Day   int     `json:"day" bson:"day"`
 	Value float64 `json:"value" bson:"value"`
 }

@@ -25,7 +25,7 @@ func filterExpenseByYearAndMonth(slice []models.ExpenseDto, year int, month int)
 	var filtered []models.GraphCost
 	for _, event := range slice {
 		if event.Date.Month() == time.Month(month) && event.Date.Year() == year {
-			filtered = append(filtered, models.GraphCost{Name: event.Name, Value: event.Value})
+			filtered = append(filtered, models.GraphCost{Day: event.Date.Day(), Value: event.Value})
 		}
 	}
 	if len(filtered) == 0 {
@@ -38,7 +38,7 @@ func filterIncomeByYearAndMonth(slice []models.IncomeDto, year int, month int) [
 	var filtered []models.GraphCost
 	for _, event := range slice {
 		if event.Date.Month() == time.Month(month) && event.Date.Year() == year {
-			filtered = append(filtered, models.GraphCost{Name: event.Name, Value: event.Value})
+			filtered = append(filtered, models.GraphCost{Day: event.Date.Day(), Value: event.Value})
 		}
 	}
 	if len(filtered) == 0 {
