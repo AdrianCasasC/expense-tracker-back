@@ -28,7 +28,7 @@ func CreateExpense(expense models.ExpenseDto) error {
 func UpdateExpense(expenseId string, expense models.ExpenseDto, fieldsMap map[string]bool) (models.ExpenseDto, error) {
 	expenseEntity := expenseFromDtoToEntity(expense)
 
-	fields := clearPatchObject(expenseEntity, fieldsMap)
+	fields := clearExpensePatchObject(expenseEntity, fieldsMap)
 
 	updatedEntity, err := repositories.ModifyExpenseDB(expenseId, fields)
 	if err != nil {
@@ -47,7 +47,7 @@ func DeleteExpense(expenseId string) (models.ExpenseDto, error) {
 	return expenseFromEntityToDto(deletedEntity), nil
 }
 
-func clearPatchObject(entity models.ExpenseEntity, fields map[string]bool) bson.M {
+func clearExpensePatchObject(entity models.ExpenseEntity, fields map[string]bool) bson.M {
 
 	updateEntity := bson.M{}
 

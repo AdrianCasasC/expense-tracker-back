@@ -8,12 +8,6 @@ import (
 	"net/http"
 )
 
-/*var expenses = []any{}
-
-func GetExpenses(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, expenses)
-}*/
-
 func GetExpenses(c *gin.Context) {
 	expenses, err := services.GetAllExpenses()
 	if err != nil {

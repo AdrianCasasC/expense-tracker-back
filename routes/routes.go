@@ -6,9 +6,15 @@ import (
 )
 
 func Routes(server *gin.Engine) {
+	// Expenses
 	server.GET("/expenses", controllers.GetExpenses)
 	server.POST("/expenses", controllers.PostExpense)
 	server.PATCH("/expenses/:expenseId", controllers.PatchExpense)
 	server.DELETE("/expenses/:expenseId", controllers.DeleteExpense)
-	//server.GET("/incomes", controllers.GetIncomes)
+	// Incomes
+	server.GET("/incomes", controllers.GetIncomes)
+	server.POST("/incomes", controllers.PostIncome)
+	server.PATCH("/incomes/:incomeId", controllers.PatchIncome)
+	server.DELETE("/incomes/:incomeId", controllers.DeleteIncome)
+
 }
