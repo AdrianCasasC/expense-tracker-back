@@ -1,13 +1,11 @@
 package controllers
 
 import (
-	"context"
-	"github.com/AdrianCasasC/expense-tracker-back/database"
 	"github.com/AdrianCasasC/expense-tracker-back/models"
+	"github.com/AdrianCasasC/expense-tracker-back/services"
+	"github.com/AdrianCasasC/expense-tracker-back/utils"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
 	"net/http"
-	"time"
 )
 
 /*var expenses = []any{}
@@ -17,85 +15,62 @@ func GetExpenses(ctx *gin.Context) {
 }*/
 
 func GetExpenses(c *gin.Context) {
-	var expensesCollection = database.GetCollection("expenses")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	cursor, err := expensesCollection.Find(ctx, bson.M{})
+	expenses, err := services.GetAllExpenses()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch expenses"})
-		return
-	}
-	defer cursor.Close(ctx)
-
-	var expenses []models.ExpenseDto
-	if err = cursor.All(ctx, &expenses); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding expenses"})
 		return
 	}
 
 	c.JSON(http.StatusOK, expenses)
 }
 
-/*
-import (
-	"context"
-	"github.com/AdrianCasasC/expense-tracker-back/database"
-	"github.com/AdrianCasasC/expense-tracker-back/models"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"log"
-	"net/http"
-	"time"
+func PostExpense(c *gin.Context) {
+	var newExpense = models.ExpenseDto{}
+	if err := c.BindJSON(&newExpense); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid request body"})
+	}
 
-	"github.com/gin-gonic/gin"
-)
-
-var expenseCollection = database.GetCollection("expenses")
-
-func GetExpenses(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	cursor, err := expenseCollection.Find(ctx, bson.M{})
+	err := services.CreateExpense(newExpense)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch expenses"})
-		return
-	}
-	defer cursor.Close(ctx)
-
-	var expenses []models.ExpenseDto
-	if err = cursor.All(ctx, &expenses); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error decoding expenses"})
-		return
-	}
-
-	c.JSON(http.StatusOK, expenses)
-}
-
-// TODO: Hacer la transformación de Dto a entity para meterlo en base de datos
-func CreateExpense(c *gin.Context) {
-	expenseCollection := database.GetCollection("expenses")
-	var expense models.ExpenseDto
-	if err := c.ShouldBindJSON(&expense); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	// Set ID and Date
-	expense.ID = primitive.NewObjectID()
-	expense.Date = time.Now().Format(time.RFC3339)
-
-	// Insert into MongoDB
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	_, err := expenseCollection.InsertOne(ctx, expense)
-	if err != nil {
-		log.Println("Error inserting expense:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert expense"})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Expense added successfully!"})
 }
-*/
+
+func PatchExpense(c *gin.Context) {
+	fieldsMap, err := utils.GetListOfFields(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	var body = models.ExpenseDto{}
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid request body"})
+		return
+	}
+
+	expenseId := c.Param("expenseId")
+
+	updatedExpense, err := services.UpdateExpense(expenseId, body, fieldsMap)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to modify expense"})
+		return
+	}
+
+	c.JSON(http.StatusOK, updatedExpense)
+}
+
+func DeleteExpense(c *gin.Context) {
+
+	expenseId := c.Param("expenseId")
+	deletedExpense, err := services.DeleteExpense(expenseId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete expense"})
+		return
+	}
+
+	c.JSON(http.StatusOK, deletedExpense)
+}
