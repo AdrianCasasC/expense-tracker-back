@@ -1,6 +1,9 @@
 package models
 
-import "go.mongodb.org/mongo-driver/bson/primitive"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 type IncomeDto struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
@@ -8,7 +11,7 @@ type IncomeDto struct {
 	Value    float64            `json:"value" bson:"value"`
 	Type     string             `json:"type" bson:"type"`
 	Category string             `json:"category" bson:"category"`
-	Date     string             `json:"date" bson:"date"`
+	Date     time.Time          `json:"date" bson:"date"`
 }
 
 type IncomeEntity struct {
@@ -16,5 +19,5 @@ type IncomeEntity struct {
 	Name     string             `json:"name" bson:"name"`
 	Value    float64            `json:"value" bson:"value"`
 	Category string             `json:"category" bson:"category"`
-	Date     string             `json:"date" bson:"date"`
+	Date     time.Time          `json:"date" bson:"date"`
 }

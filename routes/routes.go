@@ -16,5 +16,7 @@ func Routes(server *gin.Engine) {
 	server.POST("/incomes", controllers.PostIncome)
 	server.PATCH("/incomes/:incomeId", controllers.PatchIncome)
 	server.DELETE("/incomes/:incomeId", controllers.DeleteIncome)
+	// Graph
+	server.GET("/costs/:year/:month", controllers.GetCostsByYearAndMonth)
 
 }
