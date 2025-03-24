@@ -5,6 +5,7 @@ import (
 	"github.com/AdrianCasasC/expense-tracker-back/routes"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"os"
 )
 
 func main() {
@@ -22,7 +23,13 @@ func main() {
 
 	routes.Routes(server)
 
-	err := server.Run(":8080")
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	err := server.Run(":" + port)
 
 	if err != nil {
 		return
