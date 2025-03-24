@@ -14,11 +14,11 @@ func main() {
 	server := gin.Default()
 
 	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4200", "https://expensetrackerfront.netlify.app/"}, // Allowed domains
-		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE", "PUT"},                             // Allowed HTTP methods
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},                           // Allowed headers
-		ExposeHeaders:    []string{"Content-Length"},                                                    // Headers exposed to the client
-		AllowCredentials: true,                                                                          // Allow cookies/auth headers
+		AllowOrigins:     []string{"http://localhost:4200", "https://expensetrackerfront.netlify.app"}, // Allowed domains
+		AllowMethods:     []string{"GET", "POST", "PATCH", "DELETE", "PUT"},                            // Allowed HTTP methods
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},                          // Allowed headers
+		ExposeHeaders:    []string{"Content-Length"},                                                   // Headers exposed to the client
+		AllowCredentials: true,                                                                         // Allow cookies/auth headers
 	}))
 
 	routes.Routes(server)
